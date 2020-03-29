@@ -1,0 +1,204 @@
+<div class="container-fluid">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-12 col-xl-12 pt-md-3 bd-content">
+      <div class="bd-example">
+        <div class="card">
+          <h5 class="card-header">time recording</h5>
+          <div class="card-body">
+            <p class="card-text">Please document your work performance here</p>
+            <hr>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="partner-post" data-toggle="tab" href="#partner" role="tab"
+                   aria-controls="home" aria-selected="true">Partner Post</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="family-post" data-toggle="tab" href="#family" role="tab" aria-controls="profile"
+                   aria-selected="false">Family Post</a>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="partner" role="tabpanel" aria-labelledby="partner-post">
+                <form [formGroup]="timeForm" name="time" (ngSubmit)="onSubmit()">
+                  <h5 class="card-title">Work beginning</h5>
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col">
+                        <label for="start1">Start date:</label>
+
+                        <input [min]="minStart" [max]="maxEnd" type="date" id="start1" class="form-control" name="start"  (ngModelChange)="isValid()"
+                               formControlName="startDate">
+                      </div>
+                      <div class="col">
+                        <label for="hours1">hours</label>
+
+                        <input [max]="maxHours"
+                               [class.is-invalid]="this.timeForm.get('startHours').invalid && this.timeForm.get('startHours').touched"
+                               type="number" class="form-control" aria-describedby="hours" id="hours1" name="hours"
+                               formControlName="startHours">
+                        <small class="error" *ngIf="this.timeForm.get('startHours').invalid && this.timeForm.get('startHours').touched">error</small>
+                      </div>
+                      <div class="col">
+                        <label for="minutes1"> minutes </label>
+
+                        <input [max]="maxMinutes"
+                               [class.is-invalid]="this.timeForm.get('startMinutes').invalid && this.timeForm.get('startMinutes').touched"
+                               type="number" class="form-control" id="minutes1" name="minutes"
+                               formControlName="startMinutes">
+                        <small class="error" *ngIf="this.timeForm.get('startMinutes').invalid && this.timeForm.get('startMinutes').touched">error</small>
+                      </div>
+                    </div>
+                  </div>
+                  <h5 class="card-title">Work ending</h5>
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col">
+                        <label for="end">End date:</label>
+                        <input [min]="minStart" [max]="maxEnd" type="date" id="end"
+                               class="form-control" name="date-end" formControlName="endDate" (ngModelChange)="isValid()">
+                        <input type="hidden" id="custId" name="custId" value="">
+                      </div>
+                      <div class="col">
+                        <label for="hours-end">hours</label>
+                        <input
+                          [class.is-invalid]="this.timeForm.get('endHours').invalid && this.timeForm.get('endHours').touched"
+                          type="number" id="hours-end" class="form-control" name="hours-end" formControlName="endHours">
+                        <small class="error" *ngIf="this.timeForm.get('endHours').invalid && this.timeForm.get('endHours').touched">error</small>
+                      </div>
+                      <div class="col">
+                        <label for="minutes-end1"> minutes </label>
+                        <input type="number" id="minutes-end1" class="form-control" name="minutes-end"
+                               formControlName="endMinutes"
+                               [class.is-invalid]="this.timeForm.get('endMinutes').invalid && this.timeForm.get('endMinutes').touched">
+                        <small class="error" *ngIf="this.timeForm.get('endMinutes').invalid && this.timeForm.get('endMinutes').touched">error</small>
+                      </div>
+                    </div>
+                  </div>
+                  <h5 class="card-title">Area of responsibility</h5>
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <select class="form-control" id="responsibility1" formControlName="responsibility">
+                            <option *ngFor='let item of items; let i = index' [selected]="i === 0"
+                                    value="{{item}}">{{item}}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+<!--                  <button type="button" (click)="isValid()" class="btn btn-secondary">Check validity</button>-->
+                  <h5 class="card-title">Is care preventive?</h5>
+                  <div class="form-group">
+                    <div class="form-check form-check-inline">
+                      <input checked class="form-check-input" type="radio" name="isPreventive" id="isPreventive3"
+                             formControlName="isPreventive"
+                             value="true">
+                      <label class="form-check-label" for="isPreventive1">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="isPreventive" id="isPreventive4"
+                             formControlName="isPreventive"
+                             value="false">
+                      <label class="form-check-label" for="isPreventive2">No</label>
+                    </div>
+                  </div>
+                  <h5 class="card-title">Completed tasks</h5>
+                  <div class="form-group">
+                    <textarea class="form-control" rows="2" id="comment1" formControlName="comment"></textarea>
+                  </div>
+                  <button [disabled]="!timeForm.valid" type="submit" class="btn btn-primary">Submit</button>
+                </form>
+              </div>
+              <div class="tab-pane fade" id="family" role="tabpanel" aria-labelledby="family-post">
+                <form [formGroup]="timeForm" (ngSubmit)="onSubmit()" name="time2">
+                  <h5 class="card-title">Work beginning</h5>
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col">
+                        <label for="start">Start date:</label>
+
+                        <input [max]="maxToday" [min]="minStart" type="date" id="start" class="form-control"
+                               name="start" formControlName="startDate" (ngModelChange)="isValid()">
+                      </div>
+                      <div class="col">
+                        <label for="hours">hours</label>
+
+                        <input
+                          [class.is-invalid]="this.timeForm.get('startHours').invalid && this.timeForm.get('startHours').touched"
+                          type="number" class="form-control" aria-describedby="hours" id="hours" name="hours"
+                          formControlName="startHours">
+                        <small class="error" *ngIf="this.timeForm.get('startHours').invalid && this.timeForm.get('startMinutes').touched">error</small>
+                      </div>
+                      <div class="col">
+                        <label for="minutes"> minutes </label>
+                        <input
+                          [class.is-invalid]="this.timeForm.get('startMinutes').invalid && this.timeForm.get('startMinutes').touched"
+                          type="number" class="form-control" id="minutes" name="minutes" formControlName="startMinutes">
+                        <small class="error" *ngIf="this.timeForm.get('startMinutes').invalid && this.timeForm.get('startMinutes').touched">error</small>
+                      </div>
+                    </div>
+                  </div>
+                  <h5 class="card-title">Area of responsibility</h5>
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <select class="form-control" id="responsibility" formControlName="responsibility">
+                            <option *ngFor="let item of items" value="{{item}}">{{item}}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <h5 class="card-title">Is care preventive?</h5>
+                  <div class="form-group">
+                    <div class="form-check form-check-inline">
+                      <input checked class="form-check-input" type="radio" name="isPreventive" id="isPreventive1"
+                             formControlName="isPreventive"
+                             value="true">
+                      <label class="form-check-label" for="isPreventive1">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="isPreventive" id="isPreventive2"
+                             formControlName="isPreventive"
+                             value="false">
+                      <label class="form-check-label" for="isPreventive2">No</label>
+                    </div>
+                  </div>
+                  <h5 class="card-title">Completed tasks</h5>
+                  <div class="form-group">
+                    <textarea class="form-control" rows="2" id="comment" formControlName="comment"></textarea>
+                  </div>
+                  <button [disabled]="!timeForm.valid" type="submit" class="btn btn-primary">Submit</button>
+                </form>
+              </div>
+              <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">start</th>
+                  <th scope="col">end</th>
+                  <th scope="col">Duration</th>
+                  <th> </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let column of result; let i = index">
+                  <td> {{i+1}}</td>
+                  <td>{{column.dateStart}}</td>
+                  <td>{{column.dateEnd}}</td>
+                  <td>days:{{column.duration.days}} Hours:{{column.duration.hours}}<br>Minutes:{{column.duration.minutes}}</td>
+                  <td><i class="delete" (click)="deleteRow(i)">delete</i></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
