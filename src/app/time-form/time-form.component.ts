@@ -249,6 +249,6 @@ export class TimeFormComponent implements OnInit {
     // const start = new Date(this.timeForm.get('startDate').value);
     // const finish = new Date(this.timeForm.get('endDate').value);
     // return (finish.getTime() <= start.getTime());
-    return (this.duration().days < 0 || this.duration().hours < 0 || this.duration().minutes < 15 || this.duration().seconds < 0) ? false : true;
+    return (this.duration().days < 0 || this.duration().hours < 0 || this.duration().minutes < 0 || this.duration().seconds < 0 || (this.duration().hours === 0 && this.duration().minutes < 15)) ? false : true;
   }
 }
