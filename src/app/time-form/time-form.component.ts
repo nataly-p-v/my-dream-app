@@ -86,9 +86,8 @@ export class TimeFormComponent implements OnInit {
     const newEntry = {
       aufgabenbereich: this.timeForm.get('responsibility').value,
       order: this.myId,
-      // dateStart: new Date(this.timeForm.get('startDate').value).toISOString(),
+       // dateStart: new Date(this.timeForm.get('startDate').value).toISOString(),
       // dateEnd: new Date(this.timeForm.get('endDate').value).toISOString(),
-      // feiertagzuschlag: 0,
       dateStart: this.timeForm.get('startDate').value,
       dateEnd: this.timeForm.get('endDate').value,
       wochenendzuschlag: isWeekend,
