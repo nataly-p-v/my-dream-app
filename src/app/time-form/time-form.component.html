@@ -32,7 +32,7 @@
                       <div class="col">
                         <label for="hours1">hours</label>
 
-                        <input [max]="maxHours"
+                        <input [max]="maxHours" (ngModelChange)="isValid()"
                                [class.is-invalid]="this.timeForm.get('startHours').invalid && this.timeForm.get('startHours').touched"
                                type="number" class="form-control" aria-describedby="hours" id="hours1" name="hours"
                                formControlName="startHours">
@@ -41,7 +41,7 @@
                       <div class="col">
                         <label for="minutes1"> minutes </label>
 
-                        <input [max]="maxMinutes"
+                        <input [max]="maxMinutes" (ngModelChange)="isValid()"
                                [class.is-invalid]="this.timeForm.get('startMinutes').invalid && this.timeForm.get('startMinutes').touched"
                                type="number" class="form-control" id="minutes1" name="minutes"
                                formControlName="startMinutes">
@@ -60,7 +60,7 @@
                       </div>
                       <div class="col">
                         <label for="hours-end">hours</label>
-                        <input
+                        <input (ngModelChange)="isValid()"
                           [class.is-invalid]="this.timeForm.get('endHours').invalid && this.timeForm.get('endHours').touched"
                           type="number" id="hours-end" class="form-control" name="hours-end" formControlName="endHours">
                         <small class="error" *ngIf="this.timeForm.get('endHours').invalid && this.timeForm.get('endHours').touched">error</small>
@@ -68,7 +68,7 @@
                       <div class="col">
                         <label for="minutes-end1"> minutes </label>
                         <input type="number" id="minutes-end1" class="form-control" name="minutes-end"
-                               formControlName="endMinutes"
+                               formControlName="endMinutes" (ngModelChange)="isValid()"
                                [class.is-invalid]="this.timeForm.get('endMinutes').invalid && this.timeForm.get('endMinutes').touched">
                         <small class="error" *ngIf="this.timeForm.get('endMinutes').invalid && this.timeForm.get('endMinutes').touched">error</small>
                       </div>
@@ -109,10 +109,21 @@
                     <textarea class="form-control" rows="2" id="comment1" formControlName="comment"></textarea>
                   </div>
                   <button [disabled]="!timeForm.valid" type="submit" class="btn btn-primary">Submit</button>
+                  <table class="table table-striped">
+                    <tbody>
+                    <tr *ngFor="let column of result; let i = index">
+                      <td> {{i+1}}</td>
+                      <td>{{column.dateStart}}</td>
+                      <td *ngIf="column.dateEnd">{{column.dateEnd}}</td>
+                      <td *ngIf="column.duration">days:{{column.duration.days}} Hours:{{column.duration.hours}}<br>Minutes:{{column.duration.minutes}}</td>
+                      <td><i class="delete" (click)="deleteRow(i)">delete</i></td>
+                    </tr>
+                    </tbody>
+                  </table>
                 </form>
               </div>
               <div class="tab-pane fade" id="family" role="tabpanel" aria-labelledby="family-post">
-                <form [formGroup]="timeForm" (ngSubmit)="onSubmit()" name="time2">
+                <form [formGroup]="timeFormFamily" (ngSubmit)="onSubmitFamily()" name="time2">
                   <h5 class="card-title">Work beginning</h5>
                   <div class="form-group">
                     <div class="row">
@@ -126,17 +137,17 @@
                         <label for="hours">hours</label>
 
                         <input
-                          [class.is-invalid]="this.timeForm.get('startHours').invalid && this.timeForm.get('startHours').touched"
+                          [class.is-invalid]="this.timeFormFamily.get('startHours').invalid && this.timeFormFamily.get('startHours').touched"
                           type="number" class="form-control" aria-describedby="hours" id="hours" name="hours"
                           formControlName="startHours">
-                        <small class="error" *ngIf="this.timeForm.get('startHours').invalid && this.timeForm.get('startMinutes').touched">error</small>
+                        <small class="error" *ngIf="this.timeFormFamily.get('startHours').invalid && this.timeFormFamily.get('startMinutes').touched">error</small>
                       </div>
                       <div class="col">
                         <label for="minutes"> minutes </label>
                         <input
-                          [class.is-invalid]="this.timeForm.get('startMinutes').invalid && this.timeForm.get('startMinutes').touched"
+                          [class.is-invalid]="this.timeFormFamily.get('startMinutes').invalid && this.timeFormFamily.get('startMinutes').touched"
                           type="number" class="form-control" id="minutes" name="minutes" formControlName="startMinutes">
-                        <small class="error" *ngIf="this.timeForm.get('startMinutes').invalid && this.timeForm.get('startMinutes').touched">error</small>
+                        <small class="error" *ngIf="this.timeFormFamily.get('startMinutes').invalid && this.timeFormFamily.get('startMinutes').touched">error</small>
                       </div>
                     </div>
                   </div>
@@ -172,29 +183,20 @@
                   <div class="form-group">
                     <textarea class="form-control" rows="2" id="comment" formControlName="comment"></textarea>
                   </div>
-                  <button [disabled]="!timeForm.valid" type="submit" class="btn btn-primary">Submit</button>
+                  <button [disabled]="!timeFormFamily.valid" type="submit" class="btn btn-primary">Submit</button>
                 </form>
+                <table class="table table-striped">
+                  <tbody>
+                  <tr *ngFor="let column of result; let i = index">
+                    <td> {{i+1}}</td>
+                    <td>{{column.dateStart}}</td>
+                    <td *ngIf="column.dateEnd">{{column.dateEnd}}</td>
+                    <td *ngIf="column.duration">days:{{column.duration.days}} Hours:{{column.duration.hours}}<br>Minutes:{{column.duration.minutes}}</td>
+                    <td><i class="delete" (click)="deleteRow(i)">delete</i></td>
+                  </tr>
+                  </tbody>
+                </table>
               </div>
-              <table class="table table-striped">
-                <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">start</th>
-                  <th scope="col">end</th>
-                  <th scope="col">Duration</th>
-                  <th> </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let column of result; let i = index">
-                  <td> {{i+1}}</td>
-                  <td>{{column.dateStart}}</td>
-                  <td>{{column.dateEnd}}</td>
-                  <td>days:{{column.duration.days}} Hours:{{column.duration.hours}}<br>Minutes:{{column.duration.minutes}}</td>
-                  <td><i class="delete" (click)="deleteRow(i)">delete</i></td>
-                </tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>

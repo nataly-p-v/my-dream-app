@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {FormGroup, FormControl, FormArray, Validators} from '@angular/forms';
+import {FormGroup, Validators} from '@angular/forms';
 import {FormBuilder} from '@angular/forms';
 import {SubmitServiceService} from '../submit-service.service';
-import {DateValidator} from './shared/date.validator';
 import * as uuid from 'uuid';
 
 
@@ -14,6 +13,7 @@ import * as uuid from 'uuid';
 
 export class TimeFormComponent implements OnInit {
   timeForm: FormGroup;
+  timeFormFamily: FormGroup;
   items = ['working', 'clearing'];
   result = [];
   minStart;
@@ -64,6 +64,14 @@ export class TimeFormComponent implements OnInit {
         }
         minutes.updateValueAndValidity();
       });
+    this.timeFormFamily = this.fb.group({
+      startDate: ['', [Validators.required]],
+      startHours: ['', [Validators.required, Validators.max(this.maxHours), Validators.min(this.min)]],
+      startMinutes: ['', [Validators.required, Validators.max(this.maxMinutes), Validators.min(this.min)]],
+      responsibility: [''],
+      isPreventive: ['true'],
+      comment: ['default comment'],
+    });
 
     if (this.timeframe.startBookingDate && this.timeframe.endBookingDate) {
       this.minStart = this.timeframe.startBookingDate;
@@ -71,14 +79,6 @@ export class TimeFormComponent implements OnInit {
     }
     const today = new Date(Date.now());
     this.maxToday = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + today.getDate();
-  }
-
-  get startDate() {
-    return this.timeForm.get('startDate');
-  }
-
-  get endDate() {
-    return this.timeForm.get('startDate');
   }
 
   onSubmit() {
@@ -111,6 +111,33 @@ export class TimeFormComponent implements OnInit {
     console.log(this.result);
     this.submitServiceService.register(this.timeForm.value);
     this.timeForm.reset();
+  }
+
+  onSubmitFamily() {
+    const isWeekend = this.checkIfAtLeastOneIsWeekend();
+    const newEntry = {
+      aufgabenbereich: this.timeFormFamily.get('responsibility').value,
+      order: this.myId,
+      dateStart: this.timeFormFamily.get('startDate').value,
+      wochenendzuschlag: isWeekend,
+      prevention_care: this.timeFormFamily.get('isPreventive').value,
+      description: this.timeFormFamily.get('comment').value,
+    };
+    if (this.result.length >= 1) {
+      for (let i = this.result.length; i--;) {
+        if (this.result[i].dateStart === newEntry.dateStart) {
+          console.log('already booked');
+          return false;
+        } else {
+          this.result.push(newEntry);
+        }
+      }
+    } else {
+      this.result.push(newEntry);
+    }
+    console.log(this.result);
+    this.submitServiceService.register(this.timeFormFamily.value);
+    this.timeFormFamily.reset();
   }
 
   deleteRow(id) {
@@ -219,8 +246,9 @@ export class TimeFormComponent implements OnInit {
   }
 
   checkIfEndDateAfterStartDate() {
-    const start = new Date(this.timeForm.get('startDate').value);
-    const finish = new Date(this.timeForm.get('endDate').value);
-    return (finish.getTime() <= start.getTime());
+    // const start = new Date(this.timeForm.get('startDate').value);
+    // const finish = new Date(this.timeForm.get('endDate').value);
+    // return (finish.getTime() <= start.getTime());
+    return (this.duration().days < 0 || this.duration().hours < 0 || this.duration().minutes < 0 || this.duration().seconds < 0) ? false : true;
   }
 }
