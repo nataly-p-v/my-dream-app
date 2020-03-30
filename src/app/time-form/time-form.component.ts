@@ -44,26 +44,26 @@ export class TimeFormComponent implements OnInit {
       isPreventive: ['true'],
       comment: ['default comment'],
     });
-    this.timeForm.get('startHours').valueChanges.subscribe(
-      newValue => {
-        const minutes = this.timeForm.get('startMinutes');
-        if (newValue === '' || newValue === 0) {
-          minutes.setValidators([Validators.required, Validators.min(15), Validators.max(this.maxMinutes)]);
-        } else {
-          minutes.setValidators([Validators.required, Validators.min(0), Validators.max(this.maxMinutes)]);
-        }
-        minutes.updateValueAndValidity();
-      });
-    this.timeForm.get('endHours').valueChanges.subscribe(
-      newValue => {
-        const minutes = this.timeForm.get('endMinutes');
-        if (newValue === '' || newValue === 0) {
-          minutes.setValidators([Validators.required, Validators.min(15), Validators.max(this.maxMinutes)]);
-        } else {
-          minutes.setValidators([Validators.required, Validators.min(0), Validators.max(this.maxMinutes)]);
-        }
-        minutes.updateValueAndValidity();
-      });
+    // this.timeForm.get('startHours').valueChanges.subscribe(
+    //   newValue => {
+    //     const minutes = this.timeForm.get('startMinutes');
+    //     if (newValue === '' || newValue === 0) {
+    //       minutes.setValidators([Validators.required, Validators.min(15), Validators.max(this.maxMinutes)]);
+    //     } else {
+    //       minutes.setValidators([Validators.required, Validators.min(0), Validators.max(this.maxMinutes)]);
+    //     }
+    //     minutes.updateValueAndValidity();
+    //   });
+    // this.timeForm.get('endHours').valueChanges.subscribe(
+    //   newValue => {
+    //     const minutes = this.timeForm.get('endMinutes');
+    //     if (newValue === '' || newValue === 0) {
+    //       minutes.setValidators([Validators.required, Validators.min(15), Validators.max(this.maxMinutes)]);
+    //     } else {
+    //       minutes.setValidators([Validators.required, Validators.min(0), Validators.max(this.maxMinutes)]);
+    //     }
+    //     minutes.updateValueAndValidity();
+    //   });
     this.timeFormFamily = this.fb.group({
       startDate: ['', [Validators.required]],
       startHours: ['', [Validators.required, Validators.max(this.maxHours), Validators.min(this.min)]],
@@ -249,6 +249,6 @@ export class TimeFormComponent implements OnInit {
     // const start = new Date(this.timeForm.get('startDate').value);
     // const finish = new Date(this.timeForm.get('endDate').value);
     // return (finish.getTime() <= start.getTime());
-    return (this.duration().days < 0 || this.duration().hours < 0 || this.duration().minutes < 0 || this.duration().seconds < 0) ? false : true;
+    return (this.duration().days < 0 || this.duration().hours < 0 || this.duration().minutes < 15 || this.duration().seconds < 0) ? false : true;
   }
 }
